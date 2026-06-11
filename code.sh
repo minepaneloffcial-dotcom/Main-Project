@@ -37,43 +37,6 @@ show_logo() {
     echo "-------------------------------------------------------"
 }
 
-# FIXED: Function to read input with * masking (Glitch Removed)
-read_password() {
-    local prompt_text="$1"
-    local password=''
-    
-    # 1. Print the prompt ONCE before the loop starts
-    echo -ne "${CYAN}[?] $prompt_text ${NC}"
-    
-    # 2. Loop to read character by character (NO -p flag here)
-    while IFS= read -r -s -n 1 char
-    do
-        # Check for Enter (empty input)
-        if [[ -z $char ]]; then
-            echo # Move to new line
-            break
-        fi
-        
-        # Check for Backspace (ASCII 127)
-        if [[ $char == $'\177' ]]; then
-            if [ -n "$password" ]; then
-                # Remove last char from variable
-                password="${password%?}"
-                # Erase the * from screen (Backspace, Space, Backspace)
-                printf '\b \b'
-            fi
-        else
-            # Add char to password
-            password+="$char"
-            # Print *
-            printf '*'
-        fi
-    done
-    
-    # Return the password
-    echo "$password"
-}
-
 save_local_license() {
     local key=$1
     local expire=$2
@@ -116,9 +79,12 @@ verify_and_activate() {
     read -r SERVER_KEY EXPIRE_DATE DEVICE_LIMIT <<< "$RAW_DATA"
     CURRENT_DATE=$(date +%Y-%m-%d)
 
-    # 1. Get Input (Fixed Function Call)
-    # Pass only the text, let function handle colors
-    USER_KEY=$(read_password "Enter License Key")
+    # --- FIXED INPUT SECTION ---
+    # Uses standard 'read -s' for completely hidden input (no asterisks, no glitches)
+    echo -ne "${CYAN}[?] Enter License Key: ${NC}"
+    read -s USER_KEY
+    echo "" # Move to next line after pressing Enter
+    # ----------------------------
 
     # 2. Check Key
     if [ "$(echo -e "$USER_KEY" | tr -d '[:space:]')" != "$(echo -e "$SERVER_KEY" | tr -d '[:space:]')" ]; then
