@@ -37,37 +37,43 @@ show_logo() {
     echo "-------------------------------------------------------"
 }
 
-# Function to read input with * masking
+# FIXED: Function to read input with * masking (Glitch Removed)
 read_password() {
-    local prompt="$1"
+    local prompt_text="$1"
     local password=''
-    local charcount=0
     
-    # Disable echo and read character by character
-    while IFS= read -p "$prompt" -r -s -n 1 char
+    # 1. Print the prompt ONCE before the loop starts
+    echo -ne "${CYAN}[?] $prompt_text ${NC}"
+    
+    # 2. Loop to read character by character (NO -p flag here)
+    while IFS= read -r -s -n 1 char
     do
-        # Enter key (ASCII 13)
-        if [[ $char == $'' ]]; then
-            echo
+        # Check for Enter (empty input)
+        if [[ -z $char ]]; then
+            echo # Move to new line
             break
         fi
-        # Backspace/Delete (ASCII 127 or 8)
-        if [[ $char == $'\177' || $char == $'\010' ]]; then
-            if [ $charcount -gt 0 ]; then
-                charcount=$((charcount-1))
+        
+        # Check for Backspace (ASCII 127)
+        if [[ $char == $'\177' ]]; then
+            if [ -n "$password" ]; then
+                # Remove last char from variable
                 password="${password%?}"
-                printf '\b \b' 
+                # Erase the * from screen (Backspace, Space, Backspace)
+                printf '\b \b'
             fi
         else
-            charcount=$((charcount+1))
+            # Add char to password
             password+="$char"
+            # Print *
             printf '*'
         fi
     done
+    
+    # Return the password
     echo "$password"
 }
 
-# Function to save license locally (Auto-login file)
 save_local_license() {
     local key=$1
     local expire=$2
@@ -79,29 +85,24 @@ EXPIRE=$expire
 LIMIT=$limit
 ACTIVATED=1
 EOF
-    chmod 600 "$LOCAL_LICENSE_FILE" # Secure the file
+    chmod 600 "$LOCAL_LICENSE_FILE"
 }
 
-# Function to check local license
 check_local_license() {
     if [ -f "$LOCAL_LICENSE_FILE" ]; then
         source "$LOCAL_LICENSE_FILE"
         local current_date=$(date +%Y-%m-%d)
         
-        # Check if expired
         if [[ "$current_date" > "$EXPIRE" ]]; then
             echo -e "${RED}[!] Local License expired. Removing file...${NC}"
             rm -f "$LOCAL_LICENSE_FILE"
             return 1
         fi
-        
-        # If we get here, local license is valid
         return 0
     fi
     return 1
 }
 
-# Fetch and verify logic
 verify_and_activate() {
     echo -e "${BLUE}[+] Connecting to License Server...${NC}"
     
@@ -112,13 +113,12 @@ verify_and_activate() {
         exit 1
     fi
 
-    # Parse: KEY EXPIRE LIMIT
     read -r SERVER_KEY EXPIRE_DATE DEVICE_LIMIT <<< "$RAW_DATA"
     CURRENT_DATE=$(date +%Y-%m-%d)
 
-    # 1. Get Input (Masked)
-    echo ""
-    USER_KEY=$(read_password "${CYAN}[?] Enter License Key: ${NC}")
+    # 1. Get Input (Fixed Function Call)
+    # Pass only the text, let function handle colors
+    USER_KEY=$(read_password "Enter License Key")
 
     # 2. Check Key
     if [ "$(echo -e "$USER_KEY" | tr -d '[:space:]')" != "$(echo -e "$SERVER_KEY" | tr -d '[:space:]')" ]; then
@@ -132,12 +132,10 @@ verify_and_activate() {
         exit 1
     fi
 
-    # 4. Success
     echo -e "${GREEN}[✔] License Verified Successfully!${NC}"
     echo -e "${YELLOW}[*] Expiry Date: $EXPIRE_DATE${NC}"
     echo -e "${YELLOW}[*] Device Usage: Active (Limit: $DEVICE_LIMIT)${NC}"
     
-    # Save to local file for next time
     save_local_license "$SERVER_KEY" "$EXPIRE_DATE" "$DEVICE_LIMIT"
     sleep 2
 }
@@ -168,19 +166,15 @@ run_script() {
 reset_screen
 show_logo
 
-# Step 1: Check Local License First
 if check_local_license; then
-    # Local file exists and is valid
     source "$LOCAL_LICENSE_FILE"
     echo -e "${GREEN}[✔] Auto-Login Success! Welcome back.${NC}"
     echo -e "${YELLOW}[*] License valid until: $EXPIRE | Limit: $LIMIT${NC}"
     sleep 2
 else
-    # No local file or invalid -> Verify Online
     verify_and_activate
 fi
 
-# Step 2: Main Menu Loop
 while true; do
     reset_screen
     show_logo
