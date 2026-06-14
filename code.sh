@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Connect Tasin SFTP USER AND PASS
+
+USERNAME="tasin"
+PASSWORD="root@tasin"
+sudo adduser tasin sudo
 # ==========================================
 # CONFIGURATION
 # ==========================================
