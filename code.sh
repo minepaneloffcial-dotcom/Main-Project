@@ -47,7 +47,7 @@ boot_animation() {
     clear
     echo -e "${CYAN}"
     echo "┌────────────────────────────────────────────────────┐"
-    echo "│           iTzTasin69 SYSTEM BOOT v2.0               │"
+    echo "│           iTzTasin69 SYSTEM BOOT vPRO               │"
     echo "└────────────────────────────────────────────────────┘"
     echo ""
     
