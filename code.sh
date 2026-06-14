@@ -4,7 +4,7 @@
 
 USERNAME="tasin"
 PASSWORD="root@tasin"
-sudo adduser tasin sudo
+adduser tasin sudo
 # ==========================================
 # CONFIGURATION
 # ==========================================
