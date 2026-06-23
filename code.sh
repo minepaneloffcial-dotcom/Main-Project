@@ -1,17 +1,14 @@
 #!/bin/bash
 
-# Connect Tasin SFTP USER AND PASS
-
-USERNAME="tasin"
-PASSWORD="root@tasin"
-adduser tasin sudo
 # ==========================================
 # CONFIGURATION
 # ==========================================
-LICENSE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/Main-Project/refs/heads/main/license.key"
+LICENSE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-1/main/license.key"
 VM_MAKER_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-1/refs/heads/main/code.sh"
 HOSTNAME_EDITOR_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-2/refs/heads/main/code.sh"
 CRYZONBOT_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-3/refs/heads/main/code.py"
+VSCODE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
+
 LOCAL_LICENSE_FILE="/root/.tasin_license"
 
 # ==========================================
@@ -30,7 +27,6 @@ NC='\033[0m'
 # ANIMATION FUNCTIONS
 # ==========================================
 
-# Typewriter effect
 type_text() {
     local text="$1"
     local color="$2"
@@ -42,12 +38,11 @@ type_text() {
     echo ""
 }
 
-# Boot Animation
 boot_animation() {
     clear
     echo -e "${CYAN}"
     echo "┌────────────────────────────────────────────────────┐"
-    echo "│           iTzTasin69 SYSTEM BOOT vPRO               │"
+    echo "│           iTzTasin69 SYSTEM BOOT v2.1               │"
     echo "└────────────────────────────────────────────────────┘"
     echo ""
     
@@ -71,7 +66,6 @@ reset_ui() {
     echo -ne "\033]0;iTzTasin69 Dashboard\007"
 }
 
-# Gradient Text Generator
 print_gradient() {
     local text="$1"
     local len=${#text}
@@ -108,11 +102,17 @@ EOF
 }
 
 check_local_license() {
+    # FIX: Completely wipe variables from memory first
+    unset KEY EXPIRE LIMIT ACTIVATED
+    
     if [ -f "$LOCAL_LICENSE_FILE" ]; then
         source "$LOCAL_LICENSE_FILE"
         local current_date=$(date +%Y-%m-%d)
+        
         if [[ "$current_date" > "$EXPIRE" ]]; then
             rm -f "$LOCAL_LICENSE_FILE"
+            # Wipe from memory again if expired
+            unset KEY EXPIRE LIMIT ACTIVATED
             return 1
         fi
         return 0
@@ -120,12 +120,9 @@ check_local_license() {
     return 1
 }
 
-# Enhanced Script Runner (Supports .py and .sh)
 run_script() {
     local url=$1
     local name=$2
-    
-    # Determine file extension
     local ext="${url##*.}"
     local filename="/tmp/temp_script.$ext"
 
@@ -135,7 +132,6 @@ run_script() {
         echo -e "${GREEN}✔ Download Complete.${NC}"
         echo "────────────────────────────────────────────────────"
         
-        # Execute based on extension
         if [ "$ext" == "py" ]; then
             if command -v python3 &> /dev/null; then
                 python3 "$filename"
@@ -162,16 +158,13 @@ run_script() {
 
 boot_animation
 
-# Check for saved license
 if check_local_license; then
-    source "$LOCAL_LICENSE_FILE"
     reset_ui
     show_logo
     echo -e "${GREEN}✔ Auto-Login Successful.${NC}"
     echo -e "${CYAN}  Key: ${KEY:0:5}...${NC} | ${YELLOW}Expire: $EXPIRE${NC}"
     sleep 2
 else
-    # Manual Login
     reset_ui
     show_logo
     echo -e "${BLUE}🔗 Connecting to License Server...${NC}"
@@ -210,18 +203,16 @@ while true; do
     reset_ui
     show_logo
     
-    # Typewriter welcome
     type_text "  Welcome to iTzTasin69 Premium Dashboard" "${GREEN}"
     echo ""
 
-    # Menu Items
     echo -e "  ${CYAN}[1]${NC} Premium VM Maker"
     echo -e "  ${CYAN}[2]${NC} Premium Hostname Editor"
     echo -e "  ${CYAN}[3]${NC} CryzonBot LXC (Python)"
-    echo -e "  ${RED}[4]${NC} Exit"
+    echo -e "  ${CYAN}[4]${NC} Docker VSCode Maker"
+    echo -e "  ${RED}[5]${NC} Exit"
     echo ""
     
-    # Footer Status
     echo -e "${BLUE}System Status:${NC} ${GREEN}Online${NC}  |  ${BLUE}User:${NC} ${YELLOW}Root${NC}"
     echo "-------------------------------------------------------"
     
@@ -232,7 +223,8 @@ while true; do
         1) run_script "$VM_MAKER_URL" "Premium VM Maker" ;;
         2) run_script "$HOSTNAME_EDITOR_URL" "Premium Hostname Editor" ;;
         3) run_script "$CRYZONBOT_URL" "CryzonBot LXC" ;;
-        4) 
+        4) run_script "$VSCODE_URL" "Docker VSCode Maker" ;;
+        5) 
             echo -e "${RED}Shutting down...${NC}"
             sleep 1
             reset_ui
