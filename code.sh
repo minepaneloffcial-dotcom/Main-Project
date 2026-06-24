@@ -42,7 +42,7 @@ boot_animation() {
     clear
     echo -e "${CYAN}"
     echo "┌────────────────────────────────────────────────────┐"
-    echo "│           iTzTasin69 SYSTEM BOOT v2.1               │"
+    echo "│           iTzTasin69 SYSTEM BOOT v2.2               │"
     echo "└────────────────────────────────────────────────────┘"
     echo ""
     
@@ -102,7 +102,6 @@ EOF
 }
 
 check_local_license() {
-    # FIX: Completely wipe variables from memory first
     unset KEY EXPIRE LIMIT ACTIVATED
     
     if [ -f "$LOCAL_LICENSE_FILE" ]; then
@@ -111,7 +110,6 @@ check_local_license() {
         
         if [[ "$current_date" > "$EXPIRE" ]]; then
             rm -f "$LOCAL_LICENSE_FILE"
-            # Wipe from memory again if expired
             unset KEY EXPIRE LIMIT ACTIVATED
             return 1
         fi
@@ -168,22 +166,49 @@ else
     reset_ui
     show_logo
     echo -e "${BLUE}🔗 Connecting to License Server...${NC}"
+    
+    # Fetch data
     RAW_DATA=$(curl -s "$LICENSE_URL")
 
-    if [ -z "$RAW_DATA" ]; then
-        echo -e "${RED}✗ Connection failed. Check internet.${NC}"
+    # --- SMART ERROR CHECKING ---
+    # Check if GitHub returned a 404 HTML page instead of the text file
+    if [[ "$RAW_DATA" == *"<html>"* || "$RAW_DATA" == *"404: Not Found"* ]]; then
+        echo -e "${RED}✗ Error: GitHub returned a 404 error.${NC}"
+        echo -e "${YELLOW}  -> The license.key file might not exist, or the URL is wrong.${NC}"
         exit 1
     fi
 
+    if [ -z "$RAW_DATA" ]; then
+        echo -e "${RED}✗ Connection failed or file is completely empty.${NC}"
+        exit 1
+    fi
+    # ----------------------------
+
+    # Parse the data
     read -r SERVER_KEY EXPIRE_DATE DEVICE_LIMIT <<< "$RAW_DATA"
+    
+    # Check if parsing worked
+    if [ -z "$SERVER_KEY" ]; then
+        echo -e "${RED}✗ Error reading file.${NC}"
+        echo -e "${YELLOW}  -> Make sure your license.key format is: KEY EXPIRE_DATE LIMIT${NC}"
+        echo -e "${YELLOW}  -> Example: tasin-key 2030-12-31 10${NC}"
+        exit 1
+    fi
+
     CURRENT_DATE=$(date +%Y-%m-%d)
 
     echo -ne "${CYAN}🔑 Enter License Key: ${NC}"
     read -s USER_KEY
     echo ""
 
-    if [ "$(echo "$USER_KEY" | tr -d '[:space:]')" != "$(echo "$SERVER_KEY" | tr -d '[:space:]')" ]; then
+    # Clean and Compare
+    CLEAN_USER=$(echo "$USER_KEY" | tr -d '[:space:]')
+    CLEAN_SERVER=$(echo "$SERVER_KEY" | tr -d '[:space:]')
+
+    if [ "$CLEAN_USER" != "$CLEAN_SERVER" ]; then
         echo -e "${RED}✗ Invalid License Key.${NC}"
+        echo -e "${YELLOW}  -> You typed: $CLEAN_USER"
+        echo -e "${YELLOW}  -> Server expects: $CLEAN_SERVER${NC}"
         exit 1
     fi
 
