@@ -9,7 +9,7 @@ HOSTNAME_EDITOR_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/p
 CRYZONBOT_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-3/refs/heads/main/code.py"
 VSCODE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
 
-LOCAL_LICENSE_FILE="/root/tasin_license"
+LOCAL_LICENSE_FILE="/root/.tasin_license"
 
 # ==========================================
 # COLORS
