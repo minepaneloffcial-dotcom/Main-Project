@@ -3,13 +3,14 @@
 # ==========================================
 # CONFIGURATION
 # ==========================================
-LICENSE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/Main-Project/refs/heads/main/license.key"
+LICENSE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-1/main/license.key"
 VM_MAKER_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-1/refs/heads/main/code.sh"
 HOSTNAME_EDITOR_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-2/refs/heads/main/code.sh"
 CRYZONBOT_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-3/refs/heads/main/code.py"
 VSCODE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
 
-LOCAL_LICENSE_FILE="/root/.tasin_licens"
+# Local file ONLY remembers the key so user doesn't have to type it
+LOCAL_LICENSE_FILE="/root/.tasin_license"
 
 # ==========================================
 # COLORS
@@ -20,7 +21,6 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
-BOLD='\033[1m'
 NC='\033[0m'
 
 # ==========================================
@@ -30,10 +30,9 @@ NC='\033[0m'
 type_text() {
     local text="$1"
     local color="$2"
-    local delay=0.02
     for (( i=0; i<${#text}; i++ )); do
         echo -ne "${color}${text:$i:1}${NC}"
-        sleep $delay
+        sleep 0.02
     done
     echo ""
 }
@@ -42,17 +41,14 @@ boot_animation() {
     clear
     echo -e "${CYAN}"
     echo "┌────────────────────────────────────────────────────┐"
-    echo "│           iTzTasin69 SYSTEM BOOT v2.2               │"
+    echo "│         iTzTasin69 SECURE SYSTEM BOOT v3.0         │"
     echo "└────────────────────────────────────────────────────┘"
     echo ""
-    
-    local steps=("Initializing Core Modules..." "Loading UI Assets..." "Checking Network..." "Verifying Security...")
-    
+    local steps=("Initializing Secure Modules..." "Loading UI Assets..." "Establishing Secure Link..." "Verifying Integrity...")
     for step in "${steps[@]}"; do
         echo -ne "   ${YELLOW}●${NC} $step"
-        sleep 0.5
+        sleep 0.4
         echo -ne "\r   ${GREEN}✔${NC} $step \n"
-        sleep 0.1
     done
     echo ""
 }
@@ -63,7 +59,7 @@ boot_animation() {
 
 reset_ui() {
     clear
-    echo -ne "\033]0;iTzTasin69 Dashboard\007"
+    echo -ne "\033]0;iTzTasin69 Secure Dashboard\007"
 }
 
 print_gradient() {
@@ -91,31 +87,65 @@ show_logo() {
     echo ""
 }
 
-save_license() {
-    cat <<EOF > "$LOCAL_LICENSE_FILE"
-KEY=$1
-EXPIRE=$2
-LIMIT=$3
-ACTIVATED=1
-EOF
-    chmod 600 "$LOCAL_LICENSE_FILE" > /dev/null 2>&1
-}
-
-check_local_license() {
-    unset KEY EXPIRE LIMIT ACTIVATED
+# --- NEW SECURE LICENSE LOGIC ---
+verify_license() {
+    local input_key=""
     
+    # 1. Check if we have a cached key
     if [ -f "$LOCAL_LICENSE_FILE" ]; then
         source "$LOCAL_LICENSE_FILE"
-        local current_date=$(date +%Y-%m-%d)
-        
-        if [[ "$current_date" > "$EXPIRE" ]]; then
-            rm -f "$LOCAL_LICENSE_FILE"
-            unset KEY EXPIRE LIMIT ACTIVATED
-            return 1
-        fi
-        return 0
+        input_key="$CACHED_KEY"
+    else
+        # 2. If no cache, ask user (Hidden input)
+        echo -ne "${CYAN}🔑 Enter License Key: ${NC}"
+        read -s input_key
+        echo ""
     fi
-    return 1
+
+    # 3. MANDATORY ONLINE CHECK (This is what makes it secure)
+    echo -e "${BLUE}🔗 Authenticating with Server...${NC}"
+    RAW_DATA=$(curl -s --connect-timeout 10 "$LICENSE_URL")
+
+    # 4. Security Check: Did the file exist on GitHub?
+    if [[ "$RAW_DATA" == *"<html>"* || "$RAW_DATA" == *"404"* ]] || [ -z "$RAW_DATA" ]; then
+        echo -e "${RED}✗ SECURITY ALERT: License file missing from server!${NC}"
+        echo -e "${RED}  Access Denied. Local cache wiped.${NC}"
+        rm -f "$LOCAL_LICENSE_FILE" # Destroy local cache immediately
+        sleep 2
+        exit 1
+    fi
+
+    # 5. Parse Server Data (Format: KEY EXPIRE LIMIT PERMS)
+    read -r SERVER_KEY EXPIRE_DATE DEVICE_LIMIT PERMS <<< "$RAW_DATA"
+    
+    # Fallback if PERMS is empty in github file
+    [ -z "$PERMS" ] && PERMS="all"
+
+    # 6. Validate Key Match
+    if [ "$(echo "$input_key" | tr -d '[:space:]')" != "$(echo "$SERVER_KEY" | tr -d '[:space:]')" ]; then
+        echo -e "${RED}✗ Invalid License Key!${NC}"
+        rm -f "$LOCAL_LICENSE_FILE"
+        exit 1
+    fi
+
+    # 7. Validate Expiry
+    if [[ "$(date +%Y-%m-%d)" > "$EXPIRE_DATE" ]]; then
+        echo -e "${RED}✗ License Expired ($EXPIRE_DATE).${NC}"
+        rm -f "$LOCAL_LICENSE_FILE"
+        exit 1
+    fi
+
+    # 8. Success - Save Cache & Export Variables for Menu
+    echo "CACHED_KEY=$SERVER_KEY" > "$LOCAL_LICENSE_FILE"
+    chmod 600 "$LOCAL_LICENSE_FILE" > /dev/null 2>&1
+    
+    # Export these so the menu loop can read them
+    export LICENSE_EXPIRE="$EXPIRE_DATE"
+    export LICENSE_PERMS="$PERMS"
+    
+    echo -e "${GREEN}✔ Access Granted.${NC}"
+    echo -e "${YELLOW}  Expiry: $EXPIRE_DATE | Perms: $PERMS${NC}"
+    sleep 2
 }
 
 run_script() {
@@ -134,7 +164,7 @@ run_script() {
             if command -v python3 &> /dev/null; then
                 python3 "$filename"
             else
-                echo -e "${RED}✗ Python3 is not installed on this system.${NC}"
+                echo -e "${RED}✗ Python3 is not installed.${NC}"
             fi
         else
             bash "$filename"
@@ -143,7 +173,7 @@ run_script() {
         echo "────────────────────────────────────────────────────"
         echo -e "${YELLOW}✔ Execution Finished.${NC}"
     else
-        echo -e "${RED}✗ Failed to download script. Check URL/Internet.${NC}"
+        echo -e "${RED}✗ Failed to download script.${NC}"
     fi
     rm -f "$filename"
     echo ""
@@ -155,73 +185,11 @@ run_script() {
 # ==========================================
 
 boot_animation
+reset_ui
+show_logo
 
-if check_local_license; then
-    reset_ui
-    show_logo
-    echo -e "${GREEN}✔ Auto-Login Successful.${NC}"
-    echo -e "${CYAN}  Key: ${KEY:0:5}...${NC} | ${YELLOW}Expire: $EXPIRE${NC}"
-    sleep 2
-else
-    reset_ui
-    show_logo
-    echo -e "${BLUE}🔗 Connecting to License Server...${NC}"
-    
-    # Fetch data
-    RAW_DATA=$(curl -s "$LICENSE_URL")
-
-    # --- SMART ERROR CHECKING ---
-    # Check if GitHub returned a 404 HTML page instead of the text file
-    if [[ "$RAW_DATA" == *"<html>"* || "$RAW_DATA" == *"404: Not Found"* ]]; then
-        echo -e "${RED}✗ Error: GitHub returned a 404 error.${NC}"
-        echo -e "${YELLOW}  -> The license.key file might not exist, or the URL is wrong.${NC}"
-        exit 1
-    fi
-
-    if [ -z "$RAW_DATA" ]; then
-        echo -e "${RED}✗ Connection failed or file is completely empty.${NC}"
-        exit 1
-    fi
-    # ----------------------------
-
-    # Parse the data
-    read -r SERVER_KEY EXPIRE_DATE DEVICE_LIMIT <<< "$RAW_DATA"
-    
-    # Check if parsing worked
-    if [ -z "$SERVER_KEY" ]; then
-        echo -e "${RED}✗ Error reading file.${NC}"
-        echo -e "${YELLOW}  -> Make sure your license.key format is: KEY EXPIRE_DATE LIMIT${NC}"
-        echo -e "${YELLOW}  -> Example: tasin-key 2030-12-31 10${NC}"
-        exit 1
-    fi
-
-    CURRENT_DATE=$(date +%Y-%m-%d)
-
-    echo -ne "${CYAN}🔑 Enter License Key: ${NC}"
-    read -s USER_KEY
-    echo ""
-
-    # Clean and Compare
-    CLEAN_USER=$(echo "$USER_KEY" | tr -d '[:space:]')
-    CLEAN_SERVER=$(echo "$SERVER_KEY" | tr -d '[:space:]')
-
-    if [ "$CLEAN_USER" != "$CLEAN_SERVER" ]; then
-        echo -e "${RED}✗ Invalid License Key.${NC}"
-        echo -e "${YELLOW}  -> You typed: $CLEAN_USER"
-        echo -e "${YELLOW}  -> Server expects: $CLEAN_SERVER${NC}"
-        exit 1
-    fi
-
-    if [[ "$CURRENT_DATE" > "$EXPIRE_DATE" ]]; then
-        echo -e "${RED}✗ License Expired ($EXPIRE_DATE).${NC}"
-        exit 1
-    fi
-
-    echo -e "${GREEN}✔ License Verified!${NC}"
-    echo -e "${YELLOW}  Expire: $EXPIRE_DATE | Limit: $DEVICE_LIMIT${NC}"
-    save_license "$SERVER_KEY" "$EXPIRE_DATE" "$DEVICE_LIMIT"
-    sleep 2
-fi
+# RUN THE SECURE CHECK (Requires internet)
+verify_license
 
 # Menu Loop
 while true; do
@@ -238,19 +206,34 @@ while true; do
     echo -e "  ${RED}[5]${NC} Exit"
     echo ""
     
-    echo -e "${BLUE}System Status:${NC} ${GREEN}Online${NC}  |  ${BLUE}User:${NC} ${YELLOW}Root${NC}"
+    echo -e "${BLUE}System Status:${NC} ${GREEN}Online${NC}  |  ${BLUE}User:${NC} ${YELLOW}Root${NC}  |  ${BLUE}Expires:${NC} ${YELLOW}$LICENSE_EXPIRE${NC}"
     echo "-------------------------------------------------------"
     
     echo -ne "${YELLOW}➤ Select Option: ${NC}"
     read choice
 
     case $choice in
-        1) run_script "$VM_MAKER_URL" "Premium VM Maker" ;;
-        2) run_script "$HOSTNAME_EDITOR_URL" "Premium Hostname Editor" ;;
-        3) run_script "$CRYZONBOT_URL" "CryzonBot LXC" ;;
-        4) run_script "$VSCODE_URL" "Docker VSCode Maker" ;;
+        1|2|3|4)
+            # --- PERMISSION CHECK ---
+            # If PERMS is not "all", check if the number exists in the comma-separated list
+            if [[ "$LICENSE_PERMS" != "all" ]]; then
+                if [[ ",$LICENSE_PERMS," != *",$choice,"* ]]; then
+                    echo -e "${RED}✗ ACCESS DENIED: Your license does not permit option [$choice].${NC}"
+                    sleep 2
+                    continue
+                fi
+            fi
+            
+            # Run corresponding script
+            case $choice in
+                1) run_script "$VM_MAKER_URL" "Premium VM Maker" ;;
+                2) run_script "$HOSTNAME_EDITOR_URL" "Premium Hostname Editor" ;;
+                3) run_script "$CRYZONBOT_URL" "CryzonBot LXC" ;;
+                4) run_script "$VSCODE_URL" "Docker VSCode Maker" ;;
+            esac
+            ;;
         5) 
-            echo -e "${RED}Shutting down...${NC}"
+            echo -e "${RED}Shutting down securely...${NC}"
             sleep 1
             reset_ui
             exit 0 
