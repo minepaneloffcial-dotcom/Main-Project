@@ -28,7 +28,7 @@ NC='\033[0m'
 # SYSTEM STATS
 # ==========================================
 get_system_stats() {
-    local up_seconds=$(cat /proc/uptime | awk '{print $1}')
+    local up_seconds=$(cat /proc/uptime | awk '{print int($1)}')
     local days=$((up_seconds/86400))
     local hours=$(( (up_seconds%86400)/3600 ))
     local mins=$(( (up_seconds%3600)/60 ))
