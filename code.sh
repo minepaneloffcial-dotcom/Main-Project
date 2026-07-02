@@ -9,7 +9,6 @@ HOSTNAME_EDITOR_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/p
 CRYZONBOT_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-3/refs/heads/main/code.py"
 VSCODE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
 
-# Local file ONLY remembers the key so user doesn't have to type it
 LOCAL_LICENSE_FILE="/root/.tasin_license"
 
 # ==========================================
@@ -21,45 +20,46 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 MAGENTA='\033[0;35m'
 CYAN='\033[0;36m'
+BOLD='\033[1m'
+DIM='\033[2m'
 NC='\033[0m'
 
 # ==========================================
-# ANIMATION FUNCTIONS
+# SYSTEM STATS FUNCTIONS
 # ==========================================
 
-type_text() {
-    local text="$1"
-    local color="$2"
-    for (( i=0; i<${#text}; i++ )); do
-        echo -ne "${color}${text:$i:1}${NC}"
-        sleep 0.02
-    done
-    echo ""
-}
-
-boot_animation() {
-    clear
-    echo -e "${CYAN}"
-    echo "┌────────────────────────────────────────────────────┐"
-    echo "│         iTzTasin69 SECURE SYSTEM BOOT v3.0         │"
-    echo "└────────────────────────────────────────────────────┘"
-    echo ""
-    local steps=("Initializing Secure Modules..." "Loading UI Assets..." "Establishing Secure Link..." "Verifying Integrity...")
-    for step in "${steps[@]}"; do
-        echo -ne "   ${YELLOW}●${NC} $step"
-        sleep 0.4
-        echo -ne "\r   ${GREEN}✔${NC} $step \n"
-    done
-    echo ""
+get_system_stats() {
+    # Hostname & Uptime
+    HOST_VAL=$(hostname)
+    # 'uptime -p' outputs "up X weeks, Y days...", we cut the "up "
+    UPTIME_VAL=$(uptime -p 2>/dev/null | cut -d' ' -f2- || uptime | awk -F',' '{print $1}' | awk '{print $3,$4}')
+    
+    # Disk Usage
+    DISK_VAL=$(df -h / | awk 'NR==2 {print $5}')
+    
+    # CPU Usage (Calculated from /proc/stat)
+    CPU_VAL=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print int(usage)}')
+    
+    # RAM Usage
+    RAM_VAL=$(free -m | awk 'NR==2{printf "%.0f", $3*100/$2}')
+    
+    # Network Status (Ping Google DNS)
+    if ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+        NET_VAL="● CONNECTED"
+        NET_COLOR="$GREEN"
+    else
+        NET_VAL="● DISCONNECTED"
+        NET_COLOR="$RED"
+    fi
 }
 
 # ==========================================
-# CORE FUNCTIONS
+# UI FUNCTIONS
 # ==========================================
 
 reset_ui() {
     clear
-    echo -ne "\033]0;iTzTasin69 Secure Dashboard\007"
+    echo -ne "\033]0;iTzTasin69 Dashboard\007"
 }
 
 print_gradient() {
@@ -73,8 +73,18 @@ print_gradient() {
     echo -e "${NC}"
 }
 
-show_logo() {
+show_header() {
+    get_system_stats # Refresh stats every time screen redraws
+    
+    # VPS INFO BAR (Safe unicode characters for universal terminal support)
+    echo -e " ${BLUE}┌─────────────────────────────────────────────────────────────────────┐${NC}"
+    echo -e " ${BLUE}│${NC} ${CYAN}💻${NC} ${BOLD}$HOST_VAL${NC}$(printf '%*s' $(( 38 - ${#HOST_VAL} )) '')${BLUE}│${NC} ${CYAN}⏳${NC} ${DIM}$UPTIME_VAL${NC} ${BLUE}│${NC}"
+    echo -e " ${BLUE}│${NC} ${CYAN}💾${NC} Disk: ${YELLOW}$DISK_VAL${NC}$(printf '%*s' $(( 30 - ${#DISK_VAL} )) '')${BLUE}│${NC} ${CYAN}⚙️${NC} CPU: ${YELLOW}$CPU_VAL%${NC} ${DIM}|${NC} RAM: ${YELLOW}$RAM_VAL%${NC} ${BLUE}│${NC}"
+    echo -e " ${BLUE}└─────────────────────────────────────────────────────────────────────┘${NC}"
     echo ""
+}
+
+show_logo() {
     echo -e "${CYAN}████████╗░█████╗░░██████╗██╗███╗░░██╗${NC}"
     echo -e "${BLUE}░░░██║░░░███████║╚█████╗░██║██╔██╗██║${NC}"
     echo -e "${MAGENTA}░░░██║░░░██╔══██║░╚═══██╗██║██║╚████║${NC}"
@@ -83,63 +93,75 @@ show_logo() {
     
     local footer="P R E M I U M   D A S H B O A R Dᴹ ᴬ ᴰ ᴱ ᴮ ʸ ᶦᵀᶻᵀᵃˢᶦᴺ⁶⁹"
     printf "%*s\n" $(( (${#footer} + 80) / 2)) "$(print_gradient "$footer")"
-    echo "-------------------------------------------------------"
+}
+
+show_system_status() {
+    echo -e " ${BLUE}┌─────────────────────────────────────────────────────────────────────┐${NC}"
+    echo -e " ${BLUE}│${NC} ${BOLD}◉ SYSTEM STATUS${NC}$(printf '%*s' 51 '')${BLUE}│${NC}"
+    echo -e " ${BLUE}│${NC}$(printf '%*s' 3 '')CPU Usage: ${YELLOW}$CPU_VAL%${NC}$(printf '%*s' $(( 30 - ${#CPU_VAL} )) '')RAM Usage: ${YELLOW}$RAM_VAL%${NC}$(printf '%*s' $(( 25 - ${#RAM_VAL} )) '')Network: ${NET_COLOR}$NET_VAL${NC} ${BLUE}│${NC}"
+    echo -e " ${BLUE}└─────────────────────────────────────────────────────────────────────┘${NC}"
+}
+
+boot_animation() {
+    clear
+    echo -e "${CYAN}"
+    echo "┌────────────────────────────────────────────────────┐"
+    echo "│         iTzTasin69 SECURE SYSTEM BOOT v4.0         │"
+    echo "└────────────────────────────────────────────────────┘"
+    echo ""
+    local steps=("Initializing Secure Modules..." "Fetching Live Stats..." "Establishing Secure Link..." "Verifying Integrity...")
+    for step in "${steps[@]}"; do
+        echo -ne "   ${YELLOW}●${NC} $step"
+        sleep 0.4
+        echo -ne "\r   ${GREEN}✔${NC} $step \n"
+    done
     echo ""
 }
 
-# --- NEW SECURE LICENSE LOGIC ---
+# ==========================================
+# SECURE LICENSE LOGIC
+# ==========================================
+
 verify_license() {
     local input_key=""
     
-    # 1. Check if we have a cached key
     if [ -f "$LOCAL_LICENSE_FILE" ]; then
         source "$LOCAL_LICENSE_FILE"
         input_key="$CACHED_KEY"
     else
-        # 2. If no cache, ask user (Hidden input)
         echo -ne "${CYAN}🔑 Enter License Key: ${NC}"
         read -s input_key
         echo ""
     fi
 
-    # 3. MANDATORY ONLINE CHECK (This is what makes it secure)
     echo -e "${BLUE}🔗 Authenticating with Server...${NC}"
     RAW_DATA=$(curl -s --connect-timeout 10 "$LICENSE_URL")
 
-    # 4. Security Check: Did the file exist on GitHub?
     if [[ "$RAW_DATA" == *"<html>"* || "$RAW_DATA" == *"404"* ]] || [ -z "$RAW_DATA" ]; then
-        echo -e "${RED}✗ SECURITY ALERT: License file missing from server!${NC}"
-        echo -e "${RED}  Access Denied. Local cache wiped.${NC}"
-        rm -f "$LOCAL_LICENSE_FILE" # Destroy local cache immediately
+        echo -e "${RED}✗ SECURITY ALERT: License removed from server!${NC}"
+        rm -f "$LOCAL_LICENSE_FILE"
         sleep 2
         exit 1
     fi
 
-    # 5. Parse Server Data (Format: KEY EXPIRE LIMIT PERMS)
     read -r SERVER_KEY EXPIRE_DATE DEVICE_LIMIT PERMS <<< "$RAW_DATA"
-    
-    # Fallback if PERMS is empty in github file
     [ -z "$PERMS" ] && PERMS="all"
 
-    # 6. Validate Key Match
     if [ "$(echo "$input_key" | tr -d '[:space:]')" != "$(echo "$SERVER_KEY" | tr -d '[:space:]')" ]; then
         echo -e "${RED}✗ Invalid License Key!${NC}"
         rm -f "$LOCAL_LICENSE_FILE"
         exit 1
     fi
 
-    # 7. Validate Expiry
     if [[ "$(date +%Y-%m-%d)" > "$EXPIRE_DATE" ]]; then
         echo -e "${RED}✗ License Expired ($EXPIRE_DATE).${NC}"
         rm -f "$LOCAL_LICENSE_FILE"
         exit 1
     fi
 
-    # 8. Success - Save Cache & Export Variables for Menu
     echo "CACHED_KEY=$SERVER_KEY" > "$LOCAL_LICENSE_FILE"
     chmod 600 "$LOCAL_LICENSE_FILE" > /dev/null 2>&1
     
-    # Export these so the menu loop can read them
     export LICENSE_EXPIRE="$EXPIRE_DATE"
     export LICENSE_PERMS="$PERMS"
     
@@ -186,19 +208,19 @@ run_script() {
 
 boot_animation
 reset_ui
+show_header
 show_logo
 
-# RUN THE SECURE CHECK (Requires internet)
 verify_license
 
 # Menu Loop
 while true; do
     reset_ui
+    show_header
     show_logo
+    show_system_status
     
-    type_text "  Welcome to iTzTasin69 Premium Dashboard" "${GREEN}"
     echo ""
-
     echo -e "  ${CYAN}[1]${NC} Premium VM Maker"
     echo -e "  ${CYAN}[2]${NC} Premium Hostname Editor"
     echo -e "  ${CYAN}[3]${NC} CryzonBot LXC (Python)"
@@ -206,7 +228,7 @@ while true; do
     echo -e "  ${RED}[5]${NC} Exit"
     echo ""
     
-    echo -e "${BLUE}System Status:${NC} ${GREEN}Online${NC}  |  ${BLUE}User:${NC} ${YELLOW}Root${NC}  |  ${BLUE}Expires:${NC} ${YELLOW}$LICENSE_EXPIRE${NC}"
+    echo -e " ${DIM}License Valid Until: $LICENSE_EXPIRE${NC}"
     echo "-------------------------------------------------------"
     
     echo -ne "${YELLOW}➤ Select Option: ${NC}"
@@ -214,8 +236,6 @@ while true; do
 
     case $choice in
         1|2|3|4)
-            # --- PERMISSION CHECK ---
-            # If PERMS is not "all", check if the number exists in the comma-separated list
             if [[ "$LICENSE_PERMS" != "all" ]]; then
                 if [[ ",$LICENSE_PERMS," != *",$choice,"* ]]; then
                     echo -e "${RED}✗ ACCESS DENIED: Your license does not permit option [$choice].${NC}"
@@ -224,7 +244,6 @@ while true; do
                 fi
             fi
             
-            # Run corresponding script
             case $choice in
                 1) run_script "$VM_MAKER_URL" "Premium VM Maker" ;;
                 2) run_script "$HOSTNAME_EDITOR_URL" "Premium Hostname Editor" ;;
