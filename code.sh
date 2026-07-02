@@ -28,6 +28,7 @@ NC='\033[0m'
 # SYSTEM STATS
 # ==========================================
 get_system_stats() {
+    # Fixed decimal error
     local up_seconds=$(cat /proc/uptime | awk '{print int($1)}')
     local days=$((up_seconds/86400))
     local hours=$(( (up_seconds%86400)/3600 ))
@@ -39,7 +40,8 @@ get_system_stats() {
     CPU_VAL=$(grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print int(usage)}')
     RAM_VAL=$(free -m | awk 'NR==2{printf "%.0f", $3*100/$2}')
     
-    if ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+    # FIXED: Replaced 'ping' with 'curl' because VPS providers block ping
+    if curl -s --connect-timeout 2 http://google.com > /dev/null 2>&1; then
         NET_VAL="ONLINE"
         NET_COLOR="$GREEN"
     else
@@ -84,12 +86,13 @@ draw_ui() {
     echo -e " ${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     
-    echo -e "${CYAN}  ██████╗░█████╗░░██████╗██╗███╗░░██╗${NC}"
-    echo -e "${BLUE}  ██╔════╝██╔══██╗██╔════╝██║██╔██╗██║${NC}"
-    echo -e "${MAGENTA}  ██║░░░░░███████║╚█████╗░██║██║╚████║${NC}"
-    echo -e "${MAGENTA}  ██║░░░░░██╔══██║░╚═══██╗██║██║░╚███║${NC}"
-    echo -e "${RED}  ╚██████╗██║░░██║██████╔╝██║██║░╚███║${NC}"
-    echo -e "${RED}  ╚═════╝╚═╝░░╚═╝╚═════╝░╚═╝╚═╝░░╚══╝${NC}"
+    # EXACT "TASIN" ASCII ART
+    echo -e "${CYAN}████████╗██╗░░░██╗███████╗██╗░░██╗███╗░░██╗${NC}"
+    echo -e "${BLUE}╚══██╔══╝██║░░░██║██╔════╝██║░██╔╝████╗░██║${NC}"
+    echo -e "${MAGENTA}░░░██║░░░██║░░░██║█████╗░░█████╔╝██╔██╗██║${NC}"
+    echo -e "${MAGENTA}░░░██║░░░╚██████╔╝██╔══╝░░██╔═██╗██║╚████║${NC}"
+    echo -e "${RED}░░░██║░░░░╚═══██╗███████╗██║░╚██╗██║░╚███║${NC}"
+    echo -e "${RED}░░░╚═╝░░░░░░░╚═╝╚══════╝╚═╝░░╚═╝╚═╝░░╚══╝${NC}"
     echo ""
     echo -n "      "
     print_gradient "P R E M I U M   D A S H B O A R Dᴹ ᴬ ᴰ ᴱ ᴮ ʸ ᶦᵀᶻᵀᵃˢᶦᴺ⁶⁹"
