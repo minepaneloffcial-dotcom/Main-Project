@@ -8,6 +8,7 @@ VM_MAKER_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-
 HOSTNAME_EDITOR_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-2/refs/heads/main/code.sh"
 CRYZONBOT_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-3/refs/heads/main/code.py"
 VSCODE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
+PREMIUM_FRP_TOOL_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
 
 LOCAL_LICENSE_FILE="/root/.tasin_license"
 TEMP_LIC_FILE="/tmp/.tasin_raw_data"
@@ -120,7 +121,8 @@ show_menu() {
     echo -e "      ${DIM}│${NC}   ${CYAN}[2]${NC} Premium Hostname Editor"
     echo -e "      ${DIM}│${NC}   ${CYAN}[3]${NC} CryzonBot LXC (Python)"
     echo -e "      ${DIM}│${NC}   ${CYAN}[4]${NC} Docker VSCode Maker"
-    echo -e "      ${DIM}│${NC}   ${RED}[5]${NC} Exit Dashboard"
+    echo -e "      ${DIM}│${NC}   ${CYAN}[5]${NC} Premium Frp Tool"
+    echo -e "      ${DIM}│${NC}   ${RED}[0]${NC} Exit Dashboard"
     echo -e "      ${DIM}└──────────────────────────────────────┘${NC}"
     echo ""
     echo -e "      ${DIM}License expires: $LICENSE_EXPIRE${NC}"
@@ -301,6 +303,7 @@ while true; do
                 2) run_script "$HOSTNAME_EDITOR_URL" "Premium Hostname Editor" ;;
                 3) run_script "$CRYZONBOT_URL" "CryzonBot LXC" ;;
                 4) run_script "$VSCODE_URL" "Docker VSCode Maker" ;;
+                5) run_script "$PREMIUM_FRP_TOOL_URL" "Premium Frp Tool" ;;
             esac
             ;;
         5) 
