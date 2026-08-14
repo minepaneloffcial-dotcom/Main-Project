@@ -306,7 +306,7 @@ while true; do
                 5) run_script "$PREMIUM_FRP_TOOL_URL" "Premium Frp Tool" ;;
             esac
             ;;
-        5) 
+        0) 
             echo -e "      ${RED}Shutting down securely...${NC}"
             sleep 1
             reset_ui
