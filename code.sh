@@ -8,7 +8,7 @@ VM_MAKER_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-
 HOSTNAME_EDITOR_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-2/refs/heads/main/code.sh"
 CRYZONBOT_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-3/refs/heads/main/code.py"
 VSCODE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
-PREMIUM_FRP_TOOL_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-f.p/refs/heads/main/code.sh"
+FRP_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-f.p/refs/heads/main/code.sh"
 
 LOCAL_LICENSE_FILE="/root/.tasin_license"
 TEMP_LIC_FILE="/tmp/.tasin_raw_data"
@@ -43,7 +43,7 @@ type_text() {
 boot_animation() {
     clear
     echo -e "${CYAN}  ┌─────────────────────────────────────────────────────┐${NC}"
-    echo -e "${CYAN}  │       iTzTasin69 SECURE SYSTEM BOOT v7.0            │${NC}"
+    echo -e "${CYAN}  │         iTzTasin69 SECURE SYSTEM BOOT v8.0            │${NC}"
     echo -e "${CYAN}  └─────────────────────────────────────────────────────┘${NC}"
     echo ""
     local steps=("Initializing Core Modules..." "Loading System Assets..." "Connecting to Database..." "Verifying Security Patches...")
@@ -95,38 +95,38 @@ print_gradient() {
 draw_ui() {
     get_system_stats
     
-    echo -e "      ${DIM}┌─ System Status ──────────────────────┐${NC}"
-    printf "      ${DIM}│${NC}  ${CYAN}Host:${NC} %-16s ${CYAN}Uptime:${NC} %s${NC}\n" "$HOST_VAL" "$UPTIME_VAL"
-    printf "      ${DIM}│${NC}  ${CYAN}CPU:${NC} ${YELLOW}%-5s${NC}  ${CYAN}RAM:${NC} ${YELLOW}%-5s${NC}  ${CYAN}Net:${NC} ${NET_COLOR}%-6s${NC}\n" "$CPU_VAL%" "$RAM_VAL%" "$NET_VAL"
-    echo -e "      ${DIM}└──────────────────────────────────────┘${NC}"
+    echo -e "       ${DIM}── SYSTEM STATUS ────────────────────────${NC}"
+    printf "       ${DIM}│${NC}  ${CYAN}Host:${NC} %-16s ${CYAN}Uptime:${NC} %s${NC}\n" "$HOST_VAL" "$UPTIME_VAL"
+    printf "       ${DIM}│${NC}  ${CYAN}CPU:${NC} ${YELLOW}%-5s${NC}  ${CYAN}RAM:${NC} ${YELLOW}%-5s${NC}  ${CYAN}Net:${NC} ${NET_COLOR}%-6s${NC}\n" "$CPU_VAL%" "$RAM_VAL%" "$NET_VAL"
+    echo -e "       ${DIM}─────────────────────────────────────────${NC}"
     echo ""
     
-    echo -e "            ${CYAN}████████╗██╗  ██╗███████╗${NC}"
-    echo -e "            ${BLUE}╚══██╔══╝██║  ██║██╔════╝${NC}"
-    echo -e "            ${MAGENTA}   ██║   ███████║█████╗  ${NC}"
-    echo -e "            ${MAGENTA}   ██║   ██╔══██║██╔══╝  ${NC}"
-    echo -e "            ${RED}   ██║   ██║  ██║███████╗${NC}"
-    echo -e "            ${RED}   ╚═╝   ╚═╝  ╚═╝╚══════╝${NC}"
+    echo -e "             ${CYAN}████████╗██╗  ██╗███████╗${NC}"
+    echo -e "             ${BLUE}╚══██╔══╝██║  ██║██╔════╝${NC}"
+    echo -e "             ${MAGENTA}   ██║   ███████║█████╗  ${NC}"
+    echo -e "             ${MAGENTA}   ██║   ██╔══██║██╔══╝  ${NC}"
+    echo -e "             ${RED}   ██║   ██║  ██║███████╗${NC}"
+    echo -e "             ${RED}   ╚═╝   ╚═╝  ╚═╝╚══════╝${NC}"
     echo ""
-    echo -n "             "
+    echo -n "              "
     print_gradient "P R E M I U M   D A S H B O A R Dᴹ ᴬ ᴰ ᴱ ᴮ ʸ ᶦᵀᶻᵀᵃˢᶦᴺ⁶⁹"
     echo ""
 }
 
 show_menu() {
-    type_text "   Welcome to iTzTasin69 Premium Dashboard" "${GREEN}"
+    type_text "     Welcome to iTzTasin69 Premium Dashboard" "${GREEN}"
     echo ""
-    echo -e "      ${DIM}┌─ Script Menu ────────────────────────┐${NC}"
-    echo -e "      ${DIM}│${NC}   ${CYAN}[1]${NC} Premium VM Maker"
-    echo -e "      ${DIM}│${NC}   ${CYAN}[2]${NC} Premium Hostname Editor"
-    echo -e "      ${DIM}│${NC}   ${CYAN}[3]${NC} CryzonBot LXC (Python)"
-    echo -e "      ${DIM}│${NC}   ${CYAN}[4]${NC} Docker VSCode Maker"
-    echo -e "      ${DIM}│${NC}   ${CYAN}[5]${NC} Premium Frp Tool"
-    echo -e "      ${DIM}│${NC}   ${RED}[0]${NC} Exit Dashboard"
-    echo -e "      ${DIM}└──────────────────────────────────────┘${NC}"
+    echo -e "       ${DIM}── SCRIPT MENU ──────────────────────────${NC}"
+    echo -e "       ${DIM}│${NC}   ${CYAN}[01]${NC}  Premium VM Maker"
+    echo -e "       ${DIM}│${NC}   ${CYAN}[02]${NC}  Premium Hostname Editor"
+    echo -e "       ${DIM}│${NC}   ${CYAN}[03]${NC}  CryzonBot LXC (Python)"
+    echo -e "       ${DIM}│${NC}   ${CYAN}[04]${NC}  Docker VSCode Maker"
+    echo -e "       ${DIM}│${NC}   ${CYAN}[05]${NC}  PREMIUM_FRP_TOOL"
+    echo -e "       ${DIM}│${NC}   ${RED}[00]${NC}  Exit Dashboard"
+    echo -e "       ${DIM}─────────────────────────────────────────${NC}"
     echo ""
-    echo -e "      ${DIM}License expires: $LICENSE_EXPIRE${NC}"
-    echo "      ----------------------------------------------"
+    echo -e "       ${DIM}License expires: $LICENSE_EXPIRE${NC}"
+    echo "       ─────────────────────────────────────────"
 }
 
 # ==========================================
@@ -140,21 +140,21 @@ verify_license() {
         source "$LOCAL_LICENSE_FILE"
         input_key="$CACHED_KEY"
     else
-        echo -ne "      ${CYAN}🔑 Enter License Key: ${NC}"
+        echo -ne "       ${CYAN}🔑 Enter License Key: ${NC}"
         read -s input_key
         echo ""
         echo ""
     fi
 
     # Download license in background for cool spinner effect
-    echo -ne "      ${BLUE}⏳ Authenticating with Server${NC} "
+    echo -ne "       ${BLUE}⏳ Authenticating with Server${NC} "
     curl -s --connect-timeout 10 "$LICENSE_URL" > "$TEMP_LIC_FILE" &
     CURL_PID=$!
     
-    # Spinner Animation
+    # Braille Spinner Animation (Ultra Cool)
     while kill -0 $CURL_PID 2>/dev/null; do
-        for spin in '—' '\' '|' '/'; do
-            printf "\b${spin}"
+        for spin in '⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏'; do
+            printf "\b${CYAN}%s${NC}" "$spin"
             sleep 0.1
             if ! kill -0 $CURL_PID 2>/dev/null; then break; fi
         done
@@ -165,7 +165,7 @@ verify_license() {
     rm -f "$TEMP_LIC_FILE"
 
     if [[ "$RAW_DATA" == *"<html>"* || "$RAW_DATA" == *"404"* ]] || [ -z "$RAW_DATA" ]; then
-        echo -e "      ${RED}✗ SECURITY ALERT: License file missing from server!${NC}"
+        echo -e "       ${RED}✗ SECURITY ALERT: License file missing from server!${NC}"
         rm -f "$LOCAL_LICENSE_FILE"
         sleep 2
         exit 1
@@ -188,49 +188,47 @@ verify_license() {
     done <<< "$RAW_DATA"
 
     if [ "$FOUND" -eq 0 ]; then
-        echo -e "      ${RED}✗ Invalid License Key!${NC}"
+        echo -e "       ${RED}✗ Invalid License Key!${NC}"
         rm -f "$LOCAL_LICENSE_FILE"
         sleep 2
         exit 1
     fi
 
     if [[ "$(date +%Y-%m-%d)" > "$EXPIRE_DATE" ]]; then
-        echo -e "      ${RED}✗ License Expired ($EXPIRE_DATE).${NC}"
+        echo -e "       ${RED}✗ License Expired ($EXPIRE_DATE).${NC}"
         rm -f "$LOCAL_LICENSE_FILE"
         sleep 2
         exit 1
     fi
 
-    echo -e "      ${GREEN}✔ License Verified Successfully!${NC}"
-    echo -e "      ${DIM}  Expiry: $EXPIRE_DATE | Perms: $PERMS${NC}"
+    echo -e "       ${GREEN}✔ License Verified Successfully!${NC}"
+    echo -e "       ${DIM}  Expiry: $EXPIRE_DATE | Perms: $PERMS${NC}"
     echo ""
     
-    # --- NEW SAVE PROMPT ---
-    # Only ask if they didn't auto-login
+    # Ask to save key only if user manually typed it
     if [ -z "$CACHED_KEY" ]; then
         while true; do
-            echo -ne "      ${YELLOW}Save key for next time? [y/n]: ${NC}"
+            echo -ne "       ${YELLOW}Save key for next time? [y/n]: ${NC}"
             read -n 1 save_choice
             echo ""
             case "$save_choice" in
                 y|Y)
                     echo "CACHED_KEY=$SERVER_KEY" > "$LOCAL_LICENSE_FILE"
                     chmod 600 "$LOCAL_LICENSE_FILE" > /dev/null 2>&1
-                    echo -e "      ${GREEN}✔ Key saved securely.${NC}"
+                    echo -e "       ${GREEN}✔ Key saved securely.${NC}"
                     break
                     ;;
                 n|N)
                     rm -f "$LOCAL_LICENSE_FILE"
-                    echo -e "      ${DIM}✔ Key will NOT be saved.${NC}"
+                    echo -e "       ${DIM}✔ Key will NOT be saved.${NC}"
                     break
                     ;;
                 *)
-                    echo -e "      ${RED}Please enter y or n.${NC}"
+                    echo -e "       ${RED}Please enter y or n.${NC}"
                     ;;
             esac
         done
     fi
-    # ----------------------
 
     export LICENSE_EXPIRE="$EXPIRE_DATE"
     export LICENSE_PERMS="$PERMS"
@@ -244,30 +242,30 @@ run_script() {
     local ext="${url##*.}"
     local filename="/tmp/temp_script.$ext"
 
-    echo -e "      ${BLUE}⏳ Downloading ${name}...${NC}"
+    echo -e "       ${BLUE}⏳ Downloading ${name}...${NC}"
     
     if curl -s -L "$url" -o "$filename"; then
-        echo -e "      ${GREEN}✔ Download Complete.${NC}"
-        echo -e "      ${DIM}─────────────────────────────────────${NC}"
+        echo -e "       ${GREEN}✔ Download Complete.${NC}"
+        echo -e "       ${DIM}─────────────────────────────────────${NC}"
         
         if [ "$ext" == "py" ]; then
             if command -v python3 &> /dev/null; then
                 python3 "$filename"
             else
-                echo -e "      ${RED}✗ Python3 is not installed.${NC}"
+                echo -e "       ${RED}✗ Python3 is not installed.${NC}"
             fi
         else
             bash "$filename"
         fi
         
-        echo -e "      ${DIM}─────────────────────────────────────${NC}"
-        echo -e "      ${YELLOW}✔ Execution Finished.${NC}"
+        echo -e "       ${DIM}─────────────────────────────────────${NC}"
+        echo -e "       ${YELLOW}✔ Execution Finished.${NC}"
     else
-        echo -e "      ${RED}✗ Failed to download script.${NC}"
+        echo -e "       ${RED}✗ Failed to download script.${NC}"
     fi
     rm -f "$filename"
     echo ""
-    read -p "      Press [Enter] to return to dashboard..."
+    read -p "       Press [Enter] to return to dashboard..."
 }
 
 # ==========================================
@@ -285,35 +283,38 @@ while true; do
     draw_ui
     show_menu
     
-    echo -ne "      ${YELLOW}➤ Select Option: ${NC}"
+    echo -ne "       ${YELLOW}➤ Select Option: ${NC}"
     read choice
 
     case $choice in
-        1|2|3|4)
+        01|1|02|2|03|3|04|4|05|5)
+            # Strip leading zero for permission check if they typed 01, 02, etc.
+            clean_choice=$(echo "$choice" | sed 's/^0*//')
+            
             if [[ "$LICENSE_PERMS" != "all" ]]; then
-                if [[ ",$LICENSE_PERMS," != *",$choice,"* ]]; then
-                    echo -e "      ${RED}✗ ACCESS DENIED: License does not permit option [$choice].${NC}"
+                if [[ ",$LICENSE_PERMS," != *",$clean_choice,"* ]]; then
+                    echo -e "       ${RED}✗ ACCESS DENIED: License does not permit option [$choice].${NC}"
                     sleep 2
                     continue
                 fi
             fi
             
-            case $choice in
+            case $clean_choice in
                 1) run_script "$VM_MAKER_URL" "Premium VM Maker" ;;
                 2) run_script "$HOSTNAME_EDITOR_URL" "Premium Hostname Editor" ;;
                 3) run_script "$CRYZONBOT_URL" "CryzonBot LXC" ;;
                 4) run_script "$VSCODE_URL" "Docker VSCode Maker" ;;
-                5) run_script "$PREMIUM_FRP_TOOL_URL" "Premium Frp Tool" ;;
+                5) run_script "$FRP_URL" "PREMIUM_FRP_TOOL" ;;
             esac
             ;;
-        0) 
-            echo -e "      ${RED}Shutting down securely...${NC}"
+        00|0) 
+            echo -e "       ${RED}Shutting down securely...${NC}"
             sleep 1
             reset_ui
             exit 0 
             ;;
         *) 
-            echo -e "      ${RED}Invalid option.${NC}"
+            echo -e "       ${RED}Invalid option.${NC}"
             sleep 1
             ;;
     esac
