@@ -8,7 +8,7 @@ VM_MAKER_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-
 HOSTNAME_EDITOR_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-2/refs/heads/main/code.sh"
 CRYZONBOT_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-3/refs/heads/main/code.py"
 VSCODE_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
-PREMIUM_FRP_TOOL_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-5/refs/heads/main/code.sh"
+PREMIUM_FRP_TOOL_URL="https://raw.githubusercontent.com/minepaneloffcial-dotcom/project-f.p/refs/heads/main/code.sh"
 
 LOCAL_LICENSE_FILE="/root/.tasin_license"
 TEMP_LIC_FILE="/tmp/.tasin_raw_data"
